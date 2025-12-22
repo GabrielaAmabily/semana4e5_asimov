@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'classeItem.dart';
-import 'backendFalso.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+//import 'classe_item.dart';
+//import 'backendFalso.dart';
+// import 'home_page.dart';
+
 
 //usar acima 
 
