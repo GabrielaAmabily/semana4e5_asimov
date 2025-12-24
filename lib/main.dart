@@ -3,10 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 //import 'classe_item.dart';
 //import 'backendFalso.dart';
-// import 'home_page.dart';
+import 'home_page.dart';
 
-
-//usar acima 
 
 void main() {
   runApp(const AsiCoffeeApp());
@@ -24,7 +22,10 @@ class AsiCoffeeApp extends StatelessWidget {
         primarySwatch: Colors.brown,
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
-      //home: const HomePage(), //// fazerrr
+      home: const HomePage(), //// fazerrr
     );
   }
 }
+
+
+
