@@ -1,6 +1,11 @@
+import 'package:uuid/uuid.dart';
+
+const uuid = Uuid();
+
 enum Categoria { cafes, sucos, refrigerante, salgados, bolos, doces, lanches }
 
 class Item {
+  final String id;
   final String nome;
   final double preco;
   final String imageUrl;
@@ -13,5 +18,5 @@ class Item {
     required this.imageUrl,
     required this.categoria,
     this.favorito = false,
-  });
+  }) : id = uuid.v4();
 }
