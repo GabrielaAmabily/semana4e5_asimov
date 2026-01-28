@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'backend_falso.dart';
+import 'classe_item.dart';
 import 'item_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,10 +13,45 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  //  variavel para aba de favoritos 
+  int _indexSelecionado = 0;
+
+  List<Item> get _favoriteItems =>
+      itens.where((item) => item.favorito).toList();
+
+  Widget _buildList(List<Item> lista) { 
+    if (lista.isEmpty) {
+      return const Center(
+        child: Text('Nenhum item favoritado ainda.'),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: lista.length,  
+      itemBuilder: (context, index) { 
+        final item = lista[index];  
+        return ItemCard(
+          item: item,
+          onFavoriteToggle: () {
+            setState(() {
+              item.favorito = !item.favorito;
+            });
+          },
+        );
+      },
+    );
+  }
+  //fim 
+
+
+
   @override
   Widget build(BuildContext context) {
+      final isCardapioCompleto = _indexSelecionado == 0;
+
     return Scaffold(
-      //drawer 
+      //drawer
       endDrawer: Drawer(
         child: SafeArea(
           child: Column(
@@ -52,27 +88,32 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-
-      appBar: AppBar(
+       appBar: AppBar(
         title: Text(
-          'AsiCoffee 2.0',
-          style: GoogleFonts.pacifico(fontSize: 24),
-        ),
-        centerTitle: true,
+        isCardapioCompleto ? 'AsiCoffee 2.0' : 'Meus Favoritos',
+        style: GoogleFonts.pacifico(fontSize: 24),
       ),
-      body: ListView.builder(
-        itemCount: itens.length,
-        itemBuilder: (context, index) {
-          return ItemCard(
-            item: itens[index],
-            onFavoriteToggle: () {
-              setState(() {
-                itens[index].favorito =
-                    !itens[index].favorito;
-              });
-            },
-          );
+      centerTitle: true,
+    ),
+    body: isCardapioCompleto ? _buildList(itens) : _buildList(_favoriteItems),
+
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _indexSelecionado,
+        onTap: (index) {
+          setState(() {
+            _indexSelecionado = index;
+          });
         },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'Cardápio',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favoritos',
+          ),
+        ],
       ),
     );
   }
