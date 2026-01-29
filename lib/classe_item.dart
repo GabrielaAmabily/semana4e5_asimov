@@ -2,14 +2,14 @@ import 'package:uuid/uuid.dart';
 
 const uuid = Uuid();
 
-enum Categoria { cafes, sucos, refrigerante, salgados, bolos, doces, lanches }
+enum TipoCategoria { cafes, sucos, refrigerante, salgados, bolos, doces, lanches }
 
 class Item {
   final String id;
   final String nome;
   final double preco;
   final String imageUrl;
-  final Categoria categoria;
+  final TipoCategoria categoria;
   bool favorito;
 
   Item({

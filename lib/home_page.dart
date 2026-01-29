@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'backend_falso.dart';
 import 'classe_item.dart';
 import 'item_card.dart';
+import 'categorias.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -70,8 +71,14 @@ class _HomePageState extends State<HomePage> {
                 leading: const Icon(Icons.filter_list),
                 title: const Text('Filtrar por categoria'),
                 onTap: () {
-                  Navigator.pop(context);
-                  //fazer tela de filtro
+                  Navigator.pop(context); //fecha o drawer
+                  //chamar tela de categoria
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CategoriasScreen(),
+                    ),
+                  );
                 },
               ),
 
