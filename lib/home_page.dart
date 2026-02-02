@@ -14,24 +14,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  //  variavel para aba de favoritos 
+  //  variavel para aba de favoritos
   int _indexSelecionado = 0;
 
   List<Item> get _favoriteItems =>
       itens.where((item) => item.favorito).toList();
 
-  Widget _buildList(List<Item> lista) { 
+  Widget _buildList(List<Item> lista) {
     if (lista.isEmpty) {
-      return const Center(
-        child: Text('Nenhum item favoritado ainda.'),
-      );
+      return const Center(child: Text('Nenhum item favoritado ainda.'));
     }
 
     return ListView.builder(
-      itemCount: lista.length,  
-      itemBuilder: (context, index) { 
-        final item = lista[index];  
+      itemCount: lista.length,
+      itemBuilder: (context, index) {
+        final item = lista[index];
         return ItemCard(
           item: item,
           onFavoriteToggle: () {
@@ -43,13 +40,11 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-  //fim 
-
-
+  //fim
 
   @override
   Widget build(BuildContext context) {
-      final isCardapioCompleto = _indexSelecionado == 0;
+    final isCardapioCompleto = _indexSelecionado == 0;
 
     return Scaffold(
       //drawer
@@ -84,10 +79,10 @@ class _HomePageState extends State<HomePage> {
 
               ListTile(
                 leading: const Icon(Icons.edit),
-                title: const Text('Editar cardapio'),
+                title: const Text('Adicionar Item'),
                 onTap: () {
                   Navigator.pop(context);
-                  //fazer tela de editar cardapio
+                  //fazer modal
                 },
               ),
             ],
@@ -95,14 +90,14 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-       appBar: AppBar(
+      appBar: AppBar(
         title: Text(
-        isCardapioCompleto ? 'AsiCoffee 2.0' : 'Meus Favoritos',
-        style: GoogleFonts.pacifico(fontSize: 24),
+          isCardapioCompleto ? 'AsiCoffee 2.0' : 'Meus Favoritos',
+          style: GoogleFonts.pacifico(fontSize: 24),
+        ),
+        centerTitle: true,
       ),
-      centerTitle: true,
-    ),
-    body: isCardapioCompleto ? _buildList(itens) : _buildList(_favoriteItems),
+      body: isCardapioCompleto ? _buildList(itens) : _buildList(_favoriteItems),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indexSelecionado,
