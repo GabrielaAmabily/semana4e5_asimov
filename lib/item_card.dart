@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'classe_item.dart';
+import 'item_image.dart';
 
 class ItemCard extends StatelessWidget {
   final Item item;
@@ -22,18 +23,9 @@ class ItemCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                bottomLeft: Radius.circular(12),
-              ),
-              child: Image.network(
-                item.imageUrl,
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
-              ),
-            ),
+            // vou tentar fazer um if entre foto asset e foto url 
+            ItemImage(item.imageUrl),
+            //
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),

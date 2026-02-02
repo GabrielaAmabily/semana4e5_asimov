@@ -19,8 +19,10 @@ class CategoriaGridItem extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors:[
-            categoria.color.withOpacity(0.55),//pq withOpacity ricou riscado?
-            categoria.color.withOpacity(0.9),//pq withOpacity ricou riscado?
+            //categoria.color.withOpacity(0.55),//pq withOpacity ricou riscado?
+            //categoria.color.withOpacity(0.9),//pq withOpacity ricou riscado?
+            categoria.color,
+            categoria.color,
           ]  ,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -29,7 +31,7 @@ class CategoriaGridItem extends StatelessWidget {
       child: Text(
         categoria.title,
         style:  Theme.of(context).textTheme.titleLarge!.copyWith(
-          color: Theme.of(context).colorScheme.onBackground,//pq onBackground ricou riscado?
+          //color: Theme.of(context).colorScheme.onBackground,//pq onBackground ricou riscado?
         ),
       ),
     );
