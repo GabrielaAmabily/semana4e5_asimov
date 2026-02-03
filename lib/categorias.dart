@@ -1,6 +1,7 @@
 //tela de categorias
 import 'package:flutter/material.dart';
 
+import 'backend_falso.dart';
 import 'categoria.dart';
 import 'categoria_grid_item.dart';
 import 'meals.dart';
@@ -8,11 +9,19 @@ import 'meals.dart';
 class CategoriasScreen extends StatelessWidget {
   const CategoriasScreen({super.key});
 
-  void_selecionaCategoria(BuildContext context) {
+  void_selecionaCategoria(BuildContext context, Categoria categoria) {
+    final itemsFiltrados = itens //filtro por categoria
+    .where((item) => item.categoria.id == categoria.id)
+    .toList();
+
+
     Navigator.of(context).push(
       //pilha de telas
       MaterialPageRoute(
-        builder: (ctx) => MealsScreen(title: 'categoria x', itens: []),
+        builder: (ctx) => MealsScreen(
+          title: categoria.title, 
+          itens: itemsFiltrados
+        ),
       ),
     );
   }
@@ -35,7 +44,7 @@ class CategoriasScreen extends StatelessWidget {
             CategoriaGridItem(
               categoria: categoria,
               onSelecionaCategoria: () {
-                void_selecionaCategoria(context);
+                void_selecionaCategoria(context, categoria);
               },
             ),
         ],
