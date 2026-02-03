@@ -4,6 +4,7 @@
 import 'classe_item.dart';
 import 'categoria.dart';
 
+
 final cafes = categoriasDisponiveis.firstWhere((c) => c.id == 'c1');
 final sucos = categoriasDisponiveis.firstWhere((c) => c.id == 'c2');
 final refrigerantes = categoriasDisponiveis.firstWhere((c) => c.id == 'c3');
