@@ -19,21 +19,46 @@ class ItemDetalhesScreen extends StatelessWidget {
     appBar: AppBar(
       title: Text(item.nome),
     ),
-    body: SizedBox(
-      height: 300,
-      width: double.infinity,//ocupe todo espaço
+    body: Column(
+      children: [
+        SizedBox(
+          height: 300,
+          width: double.infinity,//ocupe todo espaço
 
-      //tratamento entre url e asset dnv 
-      child: item.imageUrl.startsWith('http')
-      ? Image.network(
-                item.imageUrl,
-                fit: BoxFit.cover,
-              )
-            : Image.asset(
-                item.imageUrl,
-                fit: BoxFit.cover,
-              ),
-      ),
+          //tratamento entre url e asset dnv 
+          child: item.imageUrl.startsWith('http')
+          ? Image.network(
+                    item.imageUrl,
+                    fit: BoxFit.cover,
+                  )
+                : Image.asset(
+                    item.imageUrl,
+                    fit: BoxFit.cover,
+                  ),
+          //fim do tratamento
+        ),
+        const SizedBox(height: 14),
+
+
+        Text(
+          'Ingredientes',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            color: Theme.of(context).colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox( height: 14),
+
+
+        for (final ingrediente in item.ingredientes) 
+          Text(
+            ingrediente,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+      ],    
+    ),
     );
   }
 }

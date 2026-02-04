@@ -1,9 +1,8 @@
-//dummy_data no curso 
+//dummy_data no curso
 //instaciando a classe item
 
 import 'classe_item.dart';
 import 'categoria.dart';
-
 
 final cafes = categoriasDisponiveis.firstWhere((c) => c.id == 'c1');
 final sucos = categoriasDisponiveis.firstWhere((c) => c.id == 'c2');
@@ -13,16 +12,13 @@ final bolos = categoriasDisponiveis.firstWhere((c) => c.id == 'c5');
 final doces = categoriasDisponiveis.firstWhere((c) => c.id == 'c6');
 final lanches = categoriasDisponiveis.firstWhere((c) => c.id == 'c7');
 
-
 final List<Item> itens = [
   Item(
     nome: 'Café expresso',
     preco: 8.0,
     imageUrl: 'https://images.unsplash.com/photo-1521302080334-4bebac2763a6',
     categoria: cafes,
-    ingredientes: [
-      
-    ],
+    ingredientes: ['Café moído', 'Água'],
     isGlutenFree: true,
     isLactoseFree: true,
     isSemAcucar: true,
@@ -32,11 +28,9 @@ final List<Item> itens = [
     preco: 5.0,
     imageUrl: 'assets/imagens/cafe_com_leite.png',
     categoria: cafes,
-    ingredientes: [
-      
-    ],
+    ingredientes: ['Café', 'Leite'],
     isGlutenFree: true,
-    isLactoseFree: true,
+    isLactoseFree: false,
     isSemAcucar: true,
   ),
   Item(
@@ -44,12 +38,10 @@ final List<Item> itens = [
     preco: 12.00,
     imageUrl: 'assets/imagens/capuccino.png',
     categoria: cafes,
-    ingredientes: [
-      
-    ],
+    ingredientes: ['Café', 'Leite', 'Chocolate em pó', 'Açúcar'],
     isGlutenFree: true,
-    isLactoseFree: true,
-    isSemAcucar: true,
+    isLactoseFree: false,
+    isSemAcucar: false,
   ),
   Item(
     nome: 'Croissant',
@@ -57,11 +49,16 @@ final List<Item> itens = [
     imageUrl: 'https://images.unsplash.com/photo-1549931319-a545dcf3bc73',
     categoria: salgados,
     ingredientes: [
-      
+      'Farinha de trigo',
+      'Manteiga',
+      'Leite',
+      'Açúcar',
+      'Sal',
+      'Fermento biológico',
     ],
-    isGlutenFree: true,
-    isLactoseFree: true,
-    isSemAcucar: true,
+    isGlutenFree: false,
+    isLactoseFree: false,
+    isSemAcucar: false,
   ),
   Item(
     nome: 'Bolo de Chocolate',
@@ -69,20 +66,24 @@ final List<Item> itens = [
     imageUrl: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c',
     categoria: bolos,
     ingredientes: [
-      
+      'Farinha de trigo',
+      'Ovos',
+      'Chocolate em pó',
+      'Açúcar',
+      'Leite',
+      'Manteiga',
+      'Fermento',
     ],
-    isGlutenFree: true,
-    isLactoseFree: true,
-    isSemAcucar: true,
+    isGlutenFree: false,
+    isLactoseFree: false,
+    isSemAcucar: false,
   ),
   Item(
     nome: 'Suco de Laranja',
     preco: 8.00,
     imageUrl: 'assets/imagens/suco_laranja.png',
     categoria: sucos,
-    ingredientes: [
-      
-    ],
+    ingredientes: ['Laranja'],
     isGlutenFree: true,
     isLactoseFree: true,
     isSemAcucar: true,
@@ -92,9 +93,7 @@ final List<Item> itens = [
     preco: 3.00,
     imageUrl: 'assets/imagens/agua.png',
     categoria: refrigerantes,
-    ingredientes: [
-      
-    ],
+    ingredientes: ['Água mineral'],
     isGlutenFree: true,
     isLactoseFree: true,
     isSemAcucar: true,
@@ -104,11 +103,9 @@ final List<Item> itens = [
     preco: 5.30,
     imageUrl: 'assets/imagens/paodequeijo.png',
     categoria: salgados,
-    ingredientes: [
-      
-    ],
+    ingredientes: ['Polvilho', 'Queijo', 'Leite', 'Ovos', 'Óleo', 'Sal'],
     isGlutenFree: true,
-    isLactoseFree: true,
+    isLactoseFree: false,
     isSemAcucar: true,
   ),
   Item(
@@ -117,10 +114,15 @@ final List<Item> itens = [
     imageUrl: 'assets/imagens/risole.png',
     categoria: salgados,
     ingredientes: [
-      
+      'Farinha de trigo',
+      'Leite',
+      'Manteiga',
+      'Ovo',
+      'Recheio (carne ou queijo)',
+      'Farinha de rosca',
     ],
-    isGlutenFree: true,
-    isLactoseFree: true,
+    isGlutenFree: false,
+    isLactoseFree: false,
     isSemAcucar: true,
   ),
 ];
