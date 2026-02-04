@@ -23,7 +23,7 @@ class ItemCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          onSelecionaItem(item); // ✅ bate com a assinatura
+          onSelecionaItem(item); 
         },
         child: Card(
           elevation: 4,
