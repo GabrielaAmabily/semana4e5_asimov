@@ -30,13 +30,17 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context, index) {
         final item = lista[index];
         return ItemCard(
-          item: item,
-          onFavoriteToggle: () {
-            setState(() {
-              item.favorito = !item.favorito;
-            });
-          },
-        );
+  item: item,
+  onSelecionaItem: (item) {
+    // TODO: navegar para a tela de detalhes do item
+    // Navigator.of(context).push(...)
+  },
+  onFavoriteToggle: () {
+    setState(() {
+      item.favorito = !item.favorito;
+    });
+  },
+);
       },
     );
   }

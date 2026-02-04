@@ -1,4 +1,4 @@
-//dummy_data no curso
+//dummy_data no curso 
 //instaciando a classe item
 
 import 'classe_item.dart';
@@ -18,7 +18,7 @@ final List<Item> itens = [
   Item(
     nome: 'Café expresso',
     preco: 8.0,
-    imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93',
+    imageUrl: 'https://images.unsplash.com/photo-1521302080334-4bebac2763a6',
     categoria: cafes,
     ingredientes: [
       
@@ -30,7 +30,7 @@ final List<Item> itens = [
   Item(
     nome: 'Café com Leite',
     preco: 5.0,
-    imageUrl: 'https://images.unsplash.com/photo-1521302080334-4bebac2763a6',
+    imageUrl: 'assets/imagens/cafe_com_leite.png',
     categoria: cafes,
     ingredientes: [
       

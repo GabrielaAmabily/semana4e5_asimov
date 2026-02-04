@@ -9,10 +9,10 @@ import 'meals.dart';
 class CategoriasScreen extends StatelessWidget {
   const CategoriasScreen({super.key});
 
-  void_selecionaCategoria(BuildContext context, Categoria categoria) {
+  void _selecionaCategoria(BuildContext context, Categoria categoria) {
     final itemsFiltrados = itens //filtro por categoria
-    .where((item) => item.categoria.id == categoria.id)
-    .toList();
+      .where((item) => item.categoria.id == categoria.id)
+      .toList();
 
 
     Navigator.of(context).push(
@@ -20,7 +20,7 @@ class CategoriasScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (ctx) => MealsScreen(
           title: categoria.title, 
-          itens: itemsFiltrados
+          itens: itemsFiltrados,
         ),
       ),
     );
@@ -44,7 +44,7 @@ class CategoriasScreen extends StatelessWidget {
             CategoriaGridItem(
               categoria: categoria,
               onSelecionaCategoria: () {
-                void_selecionaCategoria(context, categoria);
+                _selecionaCategoria(context, categoria);
               },
             ),
         ],
