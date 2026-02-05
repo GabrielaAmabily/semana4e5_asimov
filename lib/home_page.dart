@@ -5,6 +5,8 @@ import 'backend_falso.dart';
 import 'classe_item.dart';
 import 'item_card.dart';
 import 'categorias.dart';
+import 'item_detalhes.dart';
+import 'filtro.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,17 +32,21 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context, index) {
         final item = lista[index];
         return ItemCard(
-  item: item,
-  onSelecionaItem: (item) {
-    // TODO: navegar para a tela de detalhes do item
-    // Navigator.of(context).push(...)
-  },
-  onFavoriteToggle: () {
-    setState(() {
-      item.favorito = !item.favorito;
-    });
-  },
-);
+          item: item,
+          onSelecionaItem: (item) {
+            // TODO: navegar para a tela de detalhes do item
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => ItemDetalhesScreen(item: item),
+              ),
+            );//
+          },
+          onFavoriteToggle: () {
+            setState(() {
+              item.favorito = !item.favorito;
+            });
+          },
+        );
       },
     );
   }
@@ -68,7 +74,7 @@ class _HomePageState extends State<HomePage> {
 
               ListTile(
                 leading: const Icon(Icons.filter_list),
-                title: const Text('Filtrar por categoria'),
+                title: const Text('Categorias'),
                 onTap: () {
                   Navigator.pop(context); //fecha o drawer
                   //chamar tela de categoria
@@ -76,6 +82,21 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const CategoriasScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              ListTile(
+                leading: const Icon(Icons.eco),
+                title: const Text('Filtros'),
+                onTap: () {
+                  Navigator.pop(context); //fecha o drawer
+                  //chamar tela de filtro
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FiltrosScreen(),
                     ),
                   );
                 },
