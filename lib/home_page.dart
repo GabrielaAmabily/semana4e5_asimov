@@ -7,7 +7,7 @@ import 'item_card.dart';
 import 'categorias.dart';
 import 'item_detalhes.dart';
 import 'filtro.dart';
-
+import 'adicionar_item_modal.dart';
 import 'providers.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -76,7 +76,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               const Divider(height: 1),
 
-              
               ListTile(
                 leading: const Icon(Icons.filter_list),
                 title: const Text('Filtrar por Categoria'),
@@ -91,7 +90,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 },
               ),
 
-              
               ListTile(
                 leading: const Icon(Icons.eco),
                 title: const Text('Outros Filtros'),
@@ -106,13 +104,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                 },
               ),
 
-              
               ListTile(
                 leading: const Icon(Icons.edit),
                 title: const Text('Adicionar Item'),
                 onTap: () {
-                  Navigator.pop(context);
-                  // fazer modal
+                  Navigator.pop(context); // fecha o drawer
+
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true, // teclado não “espreme” o modal
+                    builder: (ctx) => const AdicionarItemModal(),
+                  );
                 },
               ),
             ],

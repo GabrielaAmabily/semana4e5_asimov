@@ -24,6 +24,13 @@ class ItensNotifier extends StateNotifier<List<Item>> {
     listaAtualizada[index].favorito = !listaAtualizada[index].favorito;
     state = listaAtualizada; // notifica quem está assistindo (watch)
   }
+
+    // pra eu usar no modal
+  void adicionarItem(Item novoItem) {
+    
+    state = [novoItem, ...state];
+  }
+
 }
 
 final itensStateProvider =
