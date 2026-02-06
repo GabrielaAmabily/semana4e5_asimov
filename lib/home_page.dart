@@ -32,22 +32,66 @@ class _HomePageState extends ConsumerState<HomePage> {
       itemBuilder: (context, index) {
         final item = lista[index];
 
-        return ItemCard(
-          item: item,
+        // Dismissible permite arrastar para excluir
+        return Dismissible(
+          key: ValueKey(item.id),
+          direction: DismissDirection.endToStart, // direita p/ esquerda
+          // fundo vermelho e ícone da lixeira
+          background: Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            color: Colors.red,
+            child: const Icon(Icons.delete, color: Colors.white),
+          ),
 
-          // Favorito global: atualiza via notifier (sem setState).
-          onFavoriteToggle: () {
-            ref.read(itensStateProvider.notifier).alternarFavorito(item.id);
+          //onfirmação antes de excluir 
+          confirmDismiss: (_) async {
+            return await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Excluir item?'),
+                    content: Text('Tem certeza que deseja excluir "${item.nome}"?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                        child: const Text('Cancelar'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(ctx).pop(true),
+                        child: const Text('Excluir'),
+                      ),
+                    ],
+                  ),
+                ) ??
+                false;
           },
 
-          // Navega para detalhes
-          onSelecionaItem: (item) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (ctx) => ItemDetalhesScreen(item: item),
-              ),
+          //remove do estado global 
+          onDismissed: (_) {
+            ref.read(itensStateProvider.notifier).removerItem(item.id);
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('"${item.nome}" removido')),
             );
           },
+
+          child: ItemCard(
+            item: item,
+
+            // Favorito global: atualiza via notifier
+            onFavoriteToggle: () {
+              ref.read(itensStateProvider.notifier).alternarFavorito(item.id);
+            },
+
+            // Navega para detalhes
+            onSelecionaItem: (item) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (ctx) => ItemDetalhesScreen(item: item),
+                ),
+              );
+            },
+          ),
         );
       },
     );

@@ -31,6 +31,11 @@ class ItensNotifier extends StateNotifier<List<Item>> {
     state = [novoItem, ...state];
   }
 
+  // pra quando for apagar item
+void removerItem(String itemId) {
+  state = state.where((item) => item.id != itemId).toList();
+}
+
 }
 
 final itensStateProvider =
