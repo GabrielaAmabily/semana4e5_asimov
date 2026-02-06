@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'home_page.dart';
 
-// variáveis globais para os temas
-final kColorScheme = ColorScheme.fromSeed(
-  seedColor: Colors.brown,
-);
-
-final kDarkColorScheme = ColorScheme.fromSeed(
+// Variáveis globais para os temas 
+final KColorSheme = ColorScheme.fromSeed(seedColor: Colors.brown);
+final KDarkColorSheme = ColorScheme.fromSeed(
   seedColor: Colors.brown,
   brightness: Brightness.dark,
 );
 
 void main() {
-  runApp(const AsiCoffeeApp());
+  // ProviderScope "liga" o Riverpod no app inteiro.
+  runApp(
+    const ProviderScope(
+      child: AsiCoffeeApp(),
+    ),
+  );
 }
 
 class AsiCoffeeApp extends StatelessWidget {
@@ -23,37 +26,25 @@ class AsiCoffeeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Tema claro
-    final lightTheme = ThemeData(
+    final temaClaro = ThemeData(
       useMaterial3: true,
-      colorScheme: kColorScheme,
+      colorScheme: KColorSheme,
       textTheme: GoogleFonts.poppinsTextTheme(),
-    ).copyWith(
-      appBarTheme: AppBarTheme(
-        backgroundColor: kColorScheme.primaryContainer,
-        foregroundColor: kColorScheme.onPrimaryContainer,
-      ),
     );
 
     // Tema escuro
-    final darkTheme = ThemeData(
+    final temaEscuro = ThemeData(
       useMaterial3: true,
-      colorScheme: kDarkColorScheme,
+      colorScheme: KDarkColorSheme,
       textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
-    ).copyWith(
-      appBarTheme: AppBarTheme(
-        backgroundColor: kDarkColorScheme.primaryContainer,
-        foregroundColor: kDarkColorScheme.onPrimaryContainer,
-      ),
     );
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'AsiCoffee',
-
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      themeMode: ThemeMode.system, // segue o sistema
-
+      theme: temaClaro,
+      darkTheme: temaEscuro,
+      themeMode: ThemeMode.system,
       home: const HomePage(),
     );
   }

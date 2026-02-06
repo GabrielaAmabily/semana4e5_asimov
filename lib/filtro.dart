@@ -1,124 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FiltrosScreen extends StatefulWidget {
-  const FiltrosScreen({super.key, required this.filtrosAtuais});
+import 'providers.dart';
 
-  final Map<String, bool> filtrosAtuais;
-
-  @override
-  State<FiltrosScreen> createState() => _FiltrosScreenState();
-}
-
-class _FiltrosScreenState extends State<FiltrosScreen> {
-  var _semGlutenFiltroSet = false;
-  var _semLactoseFiltroSet = false;
-  var _semAcucarFiltroSet = false;
+class FiltrosScreen extends ConsumerWidget {
+  const FiltrosScreen({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    _semGlutenFiltroSet = widget.filtrosAtuais['semGluten'] ?? false;
-    _semLactoseFiltroSet = widget.filtrosAtuais['semLactose'] ?? false;
-    _semAcucarFiltroSet = widget.filtrosAtuais['semAcucar'] ?? false;
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Lê o estado atual (rebuild quando muda)
+    final filtros = ref.watch(filtrosProvider);
 
-  void _sairSalvando() {
-    Navigator.of(context).pop({
-      'semGluten': _semGlutenFiltroSet,
-      'semLactose': _semLactoseFiltroSet,
-      'semAcucar': _semAcucarFiltroSet,
-    });
-  }
+    // Pega o controlador para alterar o estado
+    final filtrosNotifier = ref.read(filtrosProvider.notifier);
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Seus Filtros'),
         actions: [
-          IconButton(icon: const Icon(Icons.save), onPressed: _sairSalvando),
+          IconButton(
+            tooltip: 'Limpar filtros',
+            icon: const Icon(Icons.restart_alt),
+            onPressed: () {
+              filtrosNotifier.limparTudo();
+            },
+          ),
         ],
       ),
-
-      body: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (bool didPop, dynamic result) {
-          if (didPop) return;
-
-          Navigator.of(context).pop({
-            'semGluten': _semGlutenFiltroSet,
-            'semLactose': _semLactoseFiltroSet,
-            'semAcucar': _semAcucarFiltroSet,
-          });
-        },
-
-        
-        child: Column(
-          children: [
-            SwitchListTile(
-              value: _semGlutenFiltroSet,
-              onChanged: (isChecked) {
-                setState(() {
-                  _semGlutenFiltroSet = isChecked;
-                });
-              },
-              title: Text(
-                'Sem Glúten',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              subtitle: Text(
-                'Mostrar apenas itens sem glúten',
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ),
-
-            SwitchListTile(
-              value: _semLactoseFiltroSet,
-              onChanged: (isChecked) {
-                setState(() {
-                  _semLactoseFiltroSet = isChecked;
-                });
-              },
-              title: Text(
-                'Sem Lactose',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              subtitle: Text(
-                'Mostrar apenas itens sem lactose',
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ),
-
-            SwitchListTile(
-              value: _semAcucarFiltroSet,
-              onChanged: (isChecked) {
-                setState(() {
-                  _semAcucarFiltroSet = isChecked;
-                });
-              },
-              title: Text(
-                'Sem Açúcar',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              subtitle: Text(
-                'Mostrar apenas itens sem açúcar',
-                style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ),
-          ],
-        ),
+      body: Column(
+        children: [
+          SwitchListTile(
+            value: filtros.semGluten,
+            onChanged: (valor) => filtrosNotifier.definirSemGluten(valor),
+            title: const Text('Sem Glúten'),
+            subtitle: const Text('Mostrar apenas itens sem glúten'),
+          ),
+          SwitchListTile(
+            value: filtros.semLactose,
+            onChanged: (valor) => filtrosNotifier.definirSemLactose(valor),
+            title: const Text('Sem Lactose'),
+            subtitle: const Text('Mostrar apenas itens sem lactose'),
+          ),
+          SwitchListTile(
+            value: filtros.semAcucar,
+            onChanged: (valor) => filtrosNotifier.definirSemAcucar(valor),
+            title: const Text('Sem Açúcar'),
+            subtitle: const Text('Mostrar apenas itens sem açúcar'),
+          ),
+        ],
       ),
     );
   }

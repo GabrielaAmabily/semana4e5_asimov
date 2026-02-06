@@ -1,7 +1,7 @@
 //tela de categorias
 import 'package:flutter/material.dart';
 
-import 'backend_falso.dart';
+// não vai mais filtrar por categoria usando backend falso 
 import 'categoria.dart';
 import 'categoria_grid_item.dart';
 import 'meals.dart';
@@ -10,17 +10,12 @@ class CategoriasScreen extends StatelessWidget {
   const CategoriasScreen({super.key});
 
   void _selecionaCategoria(BuildContext context, Categoria categoria) {
-    final itemsFiltrados = itens //filtro por categoria
-      .where((item) => item.categoria.id == categoria.id)
-      .toList();
-
-
-    Navigator.of(context).push(
+    Navigator.of(context).push(//agora só manda o id da categoria, e a MealsScreen busca/filtra via providers
       //pilha de telas
       MaterialPageRoute(
         builder: (ctx) => MealsScreen(
-          title: categoria.title, 
-          itens: itemsFiltrados,
+          title: categoria.title,
+          categoriaId: categoria.id, 
         ),
       ),
     );

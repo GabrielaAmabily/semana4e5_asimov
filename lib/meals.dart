@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'classe_item.dart';
 import 'item_card.dart';
 import 'item_detalhes.dart';
+import 'providers.dart';
 
-class MealsScreen extends StatefulWidget {
-  const MealsScreen({super.key, required this.title, required this.itens});
+// antes era StatefulWidget agora é ConsumerWidget e recebe apenas a categoriaId
+class MealsScreen extends ConsumerWidget {
+  const MealsScreen({
+    super.key,
+    required this.title,
+    required this.categoriaId,
+  });
 
   final String title;
-  final List<Item> itens;
+  final String categoriaId;
 
-  @override
-  State<MealsScreen> createState() => _MealsScreenState();
-}
-
-class _MealsScreenState extends State<MealsScreen> {
-  void _selecionaItem(Item item) {
+  void _selecionaItem(BuildContext context, Item item) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => ItemDetalhesScreen(item: item),
@@ -23,32 +26,38 @@ class _MealsScreenState extends State<MealsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listaBase = ref.watch(itensFiltradosProvider);// Pega a lista global JÁ filtrada pelos "Outros Filtros"
+
+    // Filtra pela categoria escolhida
+    final itensDaCategoria = listaBase
+        .where((item) => item.categoria.id == categoriaId)
+        .toList();
+
     Widget content = ListView.builder(
-      itemCount: widget.itens.length,
+      itemCount: itensDaCategoria.length,
       itemBuilder: (context, index) {
-        final item = widget.itens[index];
+        final item = itensDaCategoria[index];
 
         return ItemCard(
           item: item,
-          onSelecionaItem: _selecionaItem, // ✅ agora funciona
+          onSelecionaItem: (item) => _selecionaItem(context, item), 
           onFavoriteToggle: () {
-            setState(() {
-              item.favorito = !item.favorito;
-            });
+            // agora avisa o provider global, então ao voltar a Home já vem atualizada
+            ref.read(itensStateProvider.notifier).alternarFavorito(item.id);
           },
         );
       },
     );
 
-    if (widget.itens.isEmpty) {
+    if (itensDaCategoria.isEmpty) {
       content = const Center(
         child: Text('Opa! Nada aqui ainda!', style: TextStyle(fontSize: 20)),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(title: Text(title)),
       body: content,
     );
   }

@@ -1,41 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'backend_falso.dart';
 import 'classe_item.dart';
 import 'item_card.dart';
 import 'categorias.dart';
 import 'item_detalhes.dart';
 import 'filtro.dart';
 
-class HomePage extends StatefulWidget {
+import 'providers.dart';
+
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  // variavel para aba de favoritos
+class _HomePageState extends ConsumerState<HomePage> {
+  // Estado local de UI: qual aba está selecionada.
   int _indexSelecionado = 0;
 
-  // filtros (estado local)
-  bool _semGlutenFiltroSet = false;
-  bool _semLactoseFiltroSet = false;
-  bool _semAcucarFiltroSet = false;
-
-  List<Item> get _itensFiltrados {
-    return itens.where((item) {
-      if (_semGlutenFiltroSet && !item.isGlutenFree) return false;
-      if (_semLactoseFiltroSet && !item.isLactoseFree) return false;
-      if (_semAcucarFiltroSet && !item.isSemAcucar) return false;
-      return true;
-    }).toList();
-  }
-
-  List<Item> get _favoriteItemsFiltrados =>
-      _itensFiltrados.where((item) => item.favorito).toList();
-
+  // Monta a lista de cards.
   Widget _buildList(List<Item> lista) {
     if (lista.isEmpty) {
       return const Center(child: Text('Nada aqui ainda.'));
@@ -45,13 +31,16 @@ class _HomePageState extends State<HomePage> {
       itemCount: lista.length,
       itemBuilder: (context, index) {
         final item = lista[index];
+
         return ItemCard(
           item: item,
+
+          // Favorito global: atualiza via notifier (sem setState).
           onFavoriteToggle: () {
-            setState(() {
-              item.favorito = !item.favorito;
-            });
+            ref.read(itensStateProvider.notifier).alternarFavorito(item.id);
           },
+
+          // Navega para detalhes
           onSelecionaItem: (item) {
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -64,31 +53,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> _abrirFiltros() async {
-    final result = await Navigator.of(context).push<Map<String, bool>>(
-      MaterialPageRoute(
-        builder: (ctx) => FiltrosScreen(
-          filtrosAtuais: {
-            'semGluten': _semGlutenFiltroSet,
-            'semLactose': _semLactoseFiltroSet,
-            'semAcucar': _semAcucarFiltroSet,
-          },
-        ),
-      ),
-    );
-
-    if (result == null) return;
-
-    setState(() {
-      _semGlutenFiltroSet = result['semGluten'] ?? false;
-      _semLactoseFiltroSet = result['semLactose'] ?? false;
-      _semAcucarFiltroSet = result['semAcucar'] ?? false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final isCardapioCompleto = _indexSelecionado == 0;
+
+    // Listas calculadas com filtros globais
+    final itensFiltrados = ref.watch(itensFiltradosProvider);
+    final favoritosFiltrados = ref.watch(itensFavoritosFiltradosProvider);
 
     return Scaffold(
       endDrawer: Drawer(
@@ -105,11 +76,12 @@ class _HomePageState extends State<HomePage> {
               ),
               const Divider(height: 1),
 
+              
               ListTile(
                 leading: const Icon(Icons.filter_list),
                 title: const Text('Filtrar por Categoria'),
                 onTap: () {
-                  Navigator.pop(context); // fecha o drawer
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -119,15 +91,22 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
 
+              
               ListTile(
                 leading: const Icon(Icons.eco),
                 title: const Text('Outros Filtros'),
                 onTap: () {
-                  Navigator.pop(context); // fecha o drawer
-                  _abrirFiltros();
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FiltrosScreen(),
+                    ),
+                  );
                 },
               ),
 
+              
               ListTile(
                 leading: const Icon(Icons.edit),
                 title: const Text('Adicionar Item'),
@@ -149,9 +128,10 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
       ),
 
+      // Lista depende da aba.
       body: isCardapioCompleto
-          ? _buildList(_itensFiltrados)
-          : _buildList(_favoriteItemsFiltrados),
+          ? _buildList(itensFiltrados)
+          : _buildList(favoritosFiltrados),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indexSelecionado,
