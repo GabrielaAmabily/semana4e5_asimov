@@ -16,15 +16,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //  variavel para aba de favoritos
+  // variavel para aba de favoritos
   int _indexSelecionado = 0;
 
-  List<Item> get _favoriteItems =>
-      itens.where((item) => item.favorito).toList();
+  // filtros (estado local)
+  bool _semGlutenFiltroSet = false;
+  bool _semLactoseFiltroSet = false;
+  bool _semAcucarFiltroSet = false;
+
+  List<Item> get _itensFiltrados {
+    return itens.where((item) {
+      if (_semGlutenFiltroSet && !item.isGlutenFree) return false;
+      if (_semLactoseFiltroSet && !item.isLactoseFree) return false;
+      if (_semAcucarFiltroSet && !item.isSemAcucar) return false;
+      return true;
+    }).toList();
+  }
+
+  List<Item> get _favoriteItemsFiltrados =>
+      _itensFiltrados.where((item) => item.favorito).toList();
 
   Widget _buildList(List<Item> lista) {
     if (lista.isEmpty) {
-      return const Center(child: Text('Nenhum item favoritado ainda.'));
+      return const Center(child: Text('Nada aqui ainda.'));
     }
 
     return ListView.builder(
@@ -33,31 +47,50 @@ class _HomePageState extends State<HomePage> {
         final item = lista[index];
         return ItemCard(
           item: item,
-          onSelecionaItem: (item) {
-            // TODO: navegar para a tela de detalhes do item
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (ctx) => ItemDetalhesScreen(item: item),
-              ),
-            );//
-          },
           onFavoriteToggle: () {
             setState(() {
               item.favorito = !item.favorito;
             });
           },
+          onSelecionaItem: (item) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => ItemDetalhesScreen(item: item),
+              ),
+            );
+          },
         );
       },
     );
   }
-  //fim
+
+  Future<void> _abrirFiltros() async {
+    final result = await Navigator.of(context).push<Map<String, bool>>(
+      MaterialPageRoute(
+        builder: (ctx) => FiltrosScreen(
+          filtrosAtuais: {
+            'semGluten': _semGlutenFiltroSet,
+            'semLactose': _semLactoseFiltroSet,
+            'semAcucar': _semAcucarFiltroSet,
+          },
+        ),
+      ),
+    );
+
+    if (result == null) return;
+
+    setState(() {
+      _semGlutenFiltroSet = result['semGluten'] ?? false;
+      _semLactoseFiltroSet = result['semLactose'] ?? false;
+      _semAcucarFiltroSet = result['semAcucar'] ?? false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final isCardapioCompleto = _indexSelecionado == 0;
 
     return Scaffold(
-      //drawer
       endDrawer: Drawer(
         child: SafeArea(
           child: Column(
@@ -74,10 +107,9 @@ class _HomePageState extends State<HomePage> {
 
               ListTile(
                 leading: const Icon(Icons.filter_list),
-                title: const Text('Categorias'),
+                title: const Text('Filtrar por Categoria'),
                 onTap: () {
-                  Navigator.pop(context); //fecha o drawer
-                  //chamar tela de categoria
+                  Navigator.pop(context); // fecha o drawer
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -89,16 +121,10 @@ class _HomePageState extends State<HomePage> {
 
               ListTile(
                 leading: const Icon(Icons.eco),
-                title: const Text('Filtros'),
+                title: const Text('Outros Filtros'),
                 onTap: () {
-                  Navigator.pop(context); //fecha o drawer
-                  //chamar tela de filtro
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const FiltrosScreen(),
-                    ),
-                  );
+                  Navigator.pop(context); // fecha o drawer
+                  _abrirFiltros();
                 },
               ),
 
@@ -107,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                 title: const Text('Adicionar Item'),
                 onTap: () {
                   Navigator.pop(context);
-                  //fazer modal
+                  // fazer modal
                 },
               ),
             ],
@@ -122,7 +148,10 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: true,
       ),
-      body: isCardapioCompleto ? _buildList(itens) : _buildList(_favoriteItems),
+
+      body: isCardapioCompleto
+          ? _buildList(_itensFiltrados)
+          : _buildList(_favoriteItemsFiltrados),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indexSelecionado,
