@@ -1,8 +1,7 @@
-//meal.dart no curso?
+//meal.dart no curso
 
 import 'package:uuid/uuid.dart';
 import 'categoria.dart';
-
 
 const uuid = Uuid();
 
@@ -15,6 +14,7 @@ class Item {
   final String imageUrl;
   final Categoria categoria;
   final List<String> ingredientes;
+  final DateTime dataLancamento;
   final bool isGlutenFree;
   final bool isLactoseFree;
   final bool isSemAcucar;
@@ -26,9 +26,11 @@ class Item {
     required this.imageUrl,
     required this.categoria,
     required this.ingredientes,
+    DateTime? dataLancamento,
     required this.isGlutenFree,
     required this.isLactoseFree,
     required this.isSemAcucar,
     this.favorito = false,
-  }) : id = uuid.v4();
+  }) : dataLancamento = dataLancamento ?? DateTime.now(),
+      id = uuid.v4();
 }

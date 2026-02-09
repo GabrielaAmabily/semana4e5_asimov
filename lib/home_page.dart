@@ -44,7 +44,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: const Icon(Icons.delete, color: Colors.white),
           ),
 
-          //onfirmação antes de excluir 
+          //confirmação antes de excluir 
           confirmDismiss: (_) async {
             return await showDialog<bool>(
                   context: context,
