@@ -43,7 +43,7 @@ class _ItemDetalhesScreenState extends State<ItemDetalhesScreen> {
   ),
 ],
     ),
-    body: Column(
+    body: ListView(
       children: [
         SizedBox(
           height: 300,

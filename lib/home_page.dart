@@ -22,11 +22,97 @@ class _HomePageState extends ConsumerState<HomePage> {
   int _indexSelecionado = 0;
 
   // Monta a lista de cards.
-  Widget _buildList(List<Item> lista) {
+  Widget _buildList(List<Item> lista, {required bool isWide, required double maxWidth}) {
     if (lista.isEmpty) {
       return const Center(child: Text('Nada aqui ainda.'));
     }
 
+    // Se a tela for "larga" (landscape / tablet / desktop),
+    // usa GridView para ficar mais responsivo.
+    if (isWide) {
+      final crossAxisCount = maxWidth >= 900 ? 3 : 2;
+
+      return GridView.builder(
+        padding: const EdgeInsets.all(8),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+
+          // Ajuste leve: como seu ItemCard parece ser "mais largo" (Row),
+          // um ratio maior ajuda a não ficar espremido.
+          childAspectRatio: 2.4,
+        ),
+        itemCount: lista.length,
+        itemBuilder: (context, index) {
+          final item = lista[index];
+
+          // Dismissible permite arrastar para excluir
+          return Dismissible(
+            key: ValueKey(item.id),
+            direction: DismissDirection.endToStart, // direita p/ esquerda
+            // fundo vermelho e ícone da lixeira
+            background: Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 20),
+              color: Colors.red,
+              child: const Icon(Icons.delete, color: Colors.white),
+            ),
+
+            //confirmação antes de excluir
+            confirmDismiss: (_) async {
+              return await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Excluir item?'),
+                      content: Text('Tem certeza que deseja excluir "${item.nome}"?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                          child: const Text('Cancelar'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(ctx).pop(true),
+                          child: const Text('Excluir'),
+                        ),
+                      ],
+                    ),
+                  ) ??
+                  false;
+            },
+
+            //remove do estado global
+            onDismissed: (_) {
+              ref.read(itensStateProvider.notifier).removerItem(item.id);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('"${item.nome}" removido')),
+              );
+            },
+
+            child: ItemCard(
+              item: item,
+
+              // Favorito global: atualiza via notifier
+              onFavoriteToggle: () {
+                ref.read(itensStateProvider.notifier).alternarFavorito(item.id);
+              },
+
+              // Navega para detalhes
+              onSelecionaItem: (item) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => ItemDetalhesScreen(item: item),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      );
+    }
+
+    // Caso "normal" (portrait), mantém ListView como estava.
     return ListView.builder(
       itemCount: lista.length,
       itemBuilder: (context, index) {
@@ -44,7 +130,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: const Icon(Icons.delete, color: Colors.white),
           ),
 
-          //confirmação antes de excluir 
+          //confirmação antes de excluir
           confirmDismiss: (_) async {
             return await showDialog<bool>(
                   context: context,
@@ -66,7 +152,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 false;
           },
 
-          //remove do estado global 
+          //remove do estado global
           onDismissed: (_) {
             ref.read(itensStateProvider.notifier).removerItem(item.id);
 
@@ -174,10 +260,21 @@ class _HomePageState extends ConsumerState<HomePage> {
         centerTitle: true,
       ),
 
-      // Lista depende da aba.
-      body: isCardapioCompleto
-          ? _buildList(itensFiltrados)
-          : _buildList(favoritosFiltrados),
+      // Lista depende da aba, mas agora é responsiva via LayoutBuilder.
+      body: LayoutBuilder(
+        builder: (ctx, constraints) {
+          final orientation = MediaQuery.of(context).orientation;
+          final isWide = orientation == Orientation.landscape || constraints.maxWidth >= 600;
+
+          final lista = isCardapioCompleto ? itensFiltrados : favoritosFiltrados;
+
+          return _buildList(
+            lista,
+            isWide: isWide,
+            maxWidth: constraints.maxWidth,
+          );
+        },
+      ),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _indexSelecionado,
